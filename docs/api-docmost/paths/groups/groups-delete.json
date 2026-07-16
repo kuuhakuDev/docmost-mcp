@@ -1,0 +1,119 @@
+{
+  "operationId": "deleteGroup",
+  "tags": [
+    "Groups"
+  ],
+  "summary": "Delete a group",
+  "description": "Requires Manage/Group workspace permission.",
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "groupId"
+          ],
+          "properties": {
+            "groupId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ID of the group."
+            }
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Group deleted",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "description": "Response payload"
+              },
+              "success": {
+                "type": "boolean",
+                "examples": [
+                  true
+                ]
+              },
+              "status": {
+                "type": "integer",
+                "examples": [
+                  200
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Cannot delete default group",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

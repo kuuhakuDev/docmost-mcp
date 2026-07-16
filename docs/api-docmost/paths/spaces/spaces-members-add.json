@@ -1,0 +1,147 @@
+{
+  "operationId": "addSpaceMembers",
+  "tags": [
+    "Spaces"
+  ],
+  "summary": "Add users or groups to a space",
+  "description": "Requires Manage/Member space permission.",
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "spaceId",
+            "role"
+          ],
+          "description": "Add users and/or groups as members of a space. You can add both users and groups in a single request.",
+          "properties": {
+            "spaceId": {
+              "type": "string",
+              "description": "ID of the space to add members to."
+            },
+            "role": {
+              "type": "string",
+              "enum": [
+                "admin",
+                "writer",
+                "reader"
+              ],
+              "description": "Role assigned to all added members. `admin`: full control within the space including managing members. `writer`: can create and edit pages. `reader`: read-only access to pages."
+            },
+            "userIds": {
+              "type": "array",
+              "maxItems": 25,
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "description": "User IDs to add as space members. Users already in the space are skipped. Max 25 per request."
+            },
+            "groupIds": {
+              "type": "array",
+              "maxItems": 25,
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "description": "Group IDs to add as space members. All users in the group inherit access to the space. Max 25 per request."
+            }
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Members added",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "description": "Response payload"
+              },
+              "success": {
+                "type": "boolean",
+                "examples": [
+                  true
+                ]
+              },
+              "status": {
+                "type": "integer",
+                "examples": [
+                  200
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Validation error",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

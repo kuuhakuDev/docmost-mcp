@@ -1,0 +1,134 @@
+{
+  "operationId": "ldapLogin",
+  "tags": [
+    "SSO"
+  ],
+  "summary": "Authenticate via LDAP (EE)",
+  "security": [],
+  "parameters": [
+    {
+      "name": "providerId",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "format": "uuid"
+      }
+    }
+  ],
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "username",
+            "password"
+          ],
+          "properties": {
+            "username": {
+              "type": "string",
+              "description": "LDAP username or Distinguished Name."
+            },
+            "password": {
+              "type": "string",
+              "description": "LDAP password."
+            }
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Login result (may require MFA)",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "description": "Response payload"
+              },
+              "success": {
+                "type": "boolean",
+                "examples": [
+                  true
+                ]
+              },
+              "status": {
+                "type": "integer",
+                "examples": [
+                  200
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Invalid credentials or provider config",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Account deactivated",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

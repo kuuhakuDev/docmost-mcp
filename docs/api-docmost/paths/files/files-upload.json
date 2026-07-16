@@ -1,0 +1,160 @@
+{
+  "operationId": "uploadFile",
+  "tags": [
+    "Attachments"
+  ],
+  "summary": "Upload a file attachment",
+  "requestBody": {
+    "required": true,
+    "content": {
+      "multipart/form-data": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "file",
+            "pageId"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "format": "binary",
+              "description": "The file to upload. Images, documents, and other file types are supported."
+            },
+            "pageId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ID of the page this attachment belongs to."
+            },
+            "attachmentId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Optional pre-generated attachment ID. If omitted, a new ID is generated automatically."
+            }
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Upload result with file path",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "description": "Response payload"
+              },
+              "success": {
+                "type": "boolean",
+                "examples": [
+                  true
+                ]
+              },
+              "status": {
+                "type": "integer",
+                "examples": [
+                  200
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Validation error",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "404": {
+      "description": "Page not found",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

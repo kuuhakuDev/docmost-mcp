@@ -1,0 +1,129 @@
+{
+  "operationId": "removeSpaceMember",
+  "tags": [
+    "Spaces"
+  ],
+  "summary": "Remove a user or group from a space",
+  "description": "Requires Manage/Member space permission. Provide userId or groupId (not both).",
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "spaceId"
+          ],
+          "description": "Remove a user or group from a space. Provide exactly one of `userId` or `groupId`.",
+          "properties": {
+            "spaceId": {
+              "type": "string",
+              "description": "ID of the space to remove the member from."
+            },
+            "userId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ID of the user to remove. Mutually exclusive with `groupId`."
+            },
+            "groupId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ID of the group to remove. Mutually exclusive with `userId`."
+            }
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Member removed",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "description": "Response payload"
+              },
+              "success": {
+                "type": "boolean",
+                "examples": [
+                  true
+                ]
+              },
+              "status": {
+                "type": "integer",
+                "examples": [
+                  200
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Validation error",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

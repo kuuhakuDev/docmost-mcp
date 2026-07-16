@@ -1,0 +1,106 @@
+{
+  "operationId": "getLogoOrAvatar",
+  "tags": [
+    "Attachments"
+  ],
+  "summary": "Get a workspace/space icon or user avatar",
+  "security": [],
+  "parameters": [
+    {
+      "name": "attachmentType",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string",
+        "enum": [
+          "avatar",
+          "space_icon",
+          "workspace_icon"
+        ]
+      }
+    },
+    {
+      "name": "fileName",
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Image file",
+      "content": {
+        "image/*": {
+          "schema": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Invalid attachment type",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "404": {
+      "description": "File not found",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

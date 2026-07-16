@@ -1,0 +1,115 @@
+{
+  "operationId": "setupWorkspace",
+  "tags": [
+    "Auth"
+  ],
+  "summary": "Initial workspace setup with admin account",
+  "security": [],
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "name",
+            "email",
+            "password"
+          ],
+          "description": "Used during initial workspace setup to create the first admin account and workspace.",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "description": "Display name for the admin user."
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "description": "Admin email address."
+            },
+            "password": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 70,
+              "description": "Admin password. Must be at least 8 characters."
+            },
+            "workspaceName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "description": "Name for the workspace. If omitted, a default name is used."
+            },
+            "hostname": {
+              "type": "string",
+              "minLength": 4,
+              "maxLength": 50,
+              "description": "Subdomain identifier for the workspace (e.g. `my-team`). Alphanumeric and hyphens only. If omitted, generated automatically."
+            }
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Workspace created",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "description": "Response payload"
+              },
+              "success": {
+                "type": "boolean",
+                "examples": [
+                  true
+                ]
+              },
+              "status": {
+                "type": "integer",
+                "examples": [
+                  200
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Workspace setup already completed",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

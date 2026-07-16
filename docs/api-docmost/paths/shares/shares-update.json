@@ -1,0 +1,192 @@
+{
+  "operationId": "updateShare",
+  "tags": [
+    "Shares"
+  ],
+  "summary": "Update share settings",
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "shareId"
+          ],
+          "properties": {
+            "shareId": {
+              "type": "string",
+              "description": "ID of the share to update."
+            },
+            "pageId": {
+              "type": "string",
+              "description": "Update the shared page (rarely used)."
+            },
+            "includeSubPages": {
+              "type": "boolean",
+              "description": "If `true`, the share includes the entire sub-page tree. If `false`, only the root page is shared."
+            },
+            "searchIndexing": {
+              "type": "boolean",
+              "description": "If `true`, search engines can index the page. If `false`, adds `noindex` meta tag."
+            }
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Updated share",
+      "content": {
+        "application/json": {
+          "schema": {
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "description": "Response payload"
+                  },
+                  "success": {
+                    "type": "boolean",
+                    "examples": [
+                      true
+                    ]
+                  },
+                  "status": {
+                    "type": "integer",
+                    "examples": [
+                      200
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "key": {
+                        "type": "string"
+                      },
+                      "pageId": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "format": "uuid"
+                      },
+                      "includeSubPages": {
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "searchIndexing": {
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "creatorId": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "format": "uuid"
+                      },
+                      "spaceId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "workspaceId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "404": {
+      "description": "Share not found",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "operationId": "logout",
+  "tags": [
+    "Auth"
+  ],
+  "summary": "Log out and clear auth cookie",
+  "responses": {
+    "200": {
+      "description": "Logged out",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "description": "Response payload"
+              },
+              "success": {
+                "type": "boolean",
+                "examples": [
+                  true
+                ]
+              },
+              "status": {
+                "type": "integer",
+                "examples": [
+                  200
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

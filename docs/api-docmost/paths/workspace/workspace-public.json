@@ -1,0 +1,97 @@
+{
+  "operationId": "getWorkspacePublicInfo",
+  "tags": [
+    "Workspace"
+  ],
+  "summary": "Get public workspace info (no auth required)",
+  "security": [],
+  "responses": {
+    "200": {
+      "description": "Public workspace info",
+      "content": {
+        "application/json": {
+          "schema": {
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "description": "Response payload"
+                  },
+                  "success": {
+                    "type": "boolean",
+                    "examples": [
+                      true
+                    ]
+                  },
+                  "status": {
+                    "type": "integer",
+                    "examples": [
+                      200
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "name": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "logo": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "hostname": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "enforceSso": {
+                        "type": "boolean"
+                      },
+                      "hasLicenseKey": {
+                        "type": "boolean"
+                      },
+                      "authProviders": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "type": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

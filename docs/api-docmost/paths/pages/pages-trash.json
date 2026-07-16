@@ -1,0 +1,315 @@
+{
+  "operationId": "getDeletedPages",
+  "tags": [
+    "Pages"
+  ],
+  "summary": "List deleted pages",
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "allOf": [
+            {
+              "type": "object",
+              "required": [
+                "spaceId"
+              ],
+              "properties": {
+                "spaceId": {
+                  "type": "string",
+                  "description": "ID of the space whose deleted (trashed) pages to list."
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100,
+                  "default": 20,
+                  "description": "Maximum number of items to return per page."
+                },
+                "cursor": {
+                  "type": "string",
+                  "format": "base64",
+                  "description": "Set cursor to `nextCursor` returned by the previous call to list items in the next page."
+                },
+                "query": {
+                  "type": "string",
+                  "description": "Optional text filter to search within the listed items (e.g. filter members by name)."
+                },
+                "adminView": {
+                  "type": "boolean",
+                  "description": "If `true`, the list includes all items the admin has global permissions to access by virtue of their admin role."
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Paginated deleted pages with deletedBy info",
+      "content": {
+        "application/json": {
+          "schema": {
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "description": "Response payload"
+                  },
+                  "success": {
+                    "type": "boolean",
+                    "examples": [
+                      true
+                    ]
+                  },
+                  "status": {
+                    "type": "integer",
+                    "examples": [
+                      200
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "description": "Deleted page with deletedBy and space info",
+                          "allOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                },
+                                "slugId": {
+                                  "type": "string"
+                                },
+                                "title": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "icon": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "coverPhoto": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "content": {
+                                  "description": "JSON content (ProseMirror document) or converted format",
+                                  "oneOf": [
+                                    {
+                                      "type": "object"
+                                    },
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "position": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "parentPageId": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "format": "uuid"
+                                },
+                                "spaceId": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                },
+                                "creatorId": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "format": "uuid"
+                                },
+                                "lastUpdatedById": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "format": "uuid"
+                                },
+                                "isLocked": {
+                                  "type": "boolean"
+                                },
+                                "contributorIds": {
+                                  "type": [
+                                    "array",
+                                    "null"
+                                  ],
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "workspaceId": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                },
+                                "createdAt": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "updatedAt": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "deletedAt": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "format": "date-time"
+                                }
+                              }
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "deletedBy": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "format": "uuid"
+                                    },
+                                    "name": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ]
+                                    },
+                                    "avatarUrl": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ]
+                                    }
+                                  }
+                                },
+                                "space": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "format": "uuid"
+                                    },
+                                    "name": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ]
+                                    },
+                                    "slug": {
+                                      "type": "string"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "limit": {
+                            "type": "integer"
+                          },
+                          "hasNextPage": {
+                            "type": "boolean"
+                          },
+                          "hasPrevPage": {
+                            "type": "boolean"
+                          },
+                          "nextCursor": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "format": "base64"
+                          },
+                          "prevCursor": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "format": "base64"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

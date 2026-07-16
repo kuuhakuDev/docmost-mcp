@@ -1,0 +1,105 @@
+{
+  "operationId": "searchShare",
+  "tags": [
+    "Search"
+  ],
+  "summary": "Search within a shared page tree",
+  "security": [],
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "query",
+            "shareId"
+          ],
+          "description": "Search within the page tree of a public share. No authentication required.",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Full-text search query."
+            },
+            "shareId": {
+              "type": "string",
+              "description": "ID of the share to search within. Results are restricted to pages in this share's page tree."
+            },
+            "spaceId": {
+              "type": "string",
+              "description": "Ignored — share search is scoped to the shared page tree regardless."
+            },
+            "limit": {
+              "type": "integer",
+              "description": "Maximum number of results to return."
+            },
+            "offset": {
+              "type": "integer",
+              "description": "Number of results to skip for pagination."
+            }
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Search results",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "description": "Response payload"
+              },
+              "success": {
+                "type": "boolean",
+                "examples": [
+                  true
+                ]
+              },
+              "status": {
+                "type": "integer",
+                "examples": [
+                  200
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "shareId is required",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

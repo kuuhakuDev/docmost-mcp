@@ -1,0 +1,118 @@
+{
+  "operationId": "exportPage",
+  "tags": [
+    "Export"
+  ],
+  "summary": "Export a page as HTML or Markdown zip",
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "pageId",
+            "format"
+          ],
+          "properties": {
+            "pageId": {
+              "type": "string",
+              "description": "ID of the page to export."
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "html",
+                "markdown"
+              ],
+              "description": "Export format. `html`: HTML files. `markdown`: Markdown (.md) files."
+            },
+            "includeChildren": {
+              "type": "boolean",
+              "description": "If `true`, exports the page and all its sub-pages recursively. If `false` (default), exports only the specified page."
+            },
+            "includeAttachments": {
+              "type": "boolean",
+              "description": "If `true`, includes file attachments (images, etc.) in the export archive. If `false` (default), only text content is exported."
+            }
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Zip file stream",
+      "content": {
+        "application/zip": {
+          "schema": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "404": {
+      "description": "Page not found",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

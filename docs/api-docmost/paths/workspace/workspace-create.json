@@ -1,0 +1,205 @@
+{
+  "operationId": "createCloudWorkspace",
+  "tags": [
+    "Cloud"
+  ],
+  "summary": "Create a cloud workspace (Cloud only)",
+  "security": [],
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "name",
+            "email",
+            "password"
+          ],
+          "description": "Create a new workspace on the cloud platform.",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "description": "Workspace name."
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "description": "Email for the admin account."
+            },
+            "password": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 70,
+              "description": "Password for the admin account."
+            }
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Created workspace",
+      "content": {
+        "application/json": {
+          "schema": {
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "description": "Response payload"
+                  },
+                  "success": {
+                    "type": "boolean",
+                    "examples": [
+                      true
+                    ]
+                  },
+                  "status": {
+                    "type": "integer",
+                    "examples": [
+                      200
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "name": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "description": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "logo": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "hostname": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "customDomain": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "defaultRole": {
+                        "type": "string"
+                      },
+                      "defaultSpaceId": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "format": "uuid"
+                      },
+                      "emailDomains": {
+                        "type": [
+                          "array",
+                          "null"
+                        ],
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "enforceSso": {
+                        "type": "boolean"
+                      },
+                      "enforceMfa": {
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "settings": {
+                        "type": [
+                          "object",
+                          "null"
+                        ]
+                      },
+                      "plan": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "status": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Validation error",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

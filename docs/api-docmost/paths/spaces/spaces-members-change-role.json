@@ -1,0 +1,139 @@
+{
+  "operationId": "updateSpaceMemberRole",
+  "tags": [
+    "Spaces"
+  ],
+  "summary": "Change a member's space role",
+  "description": "Requires Manage/Member space permission. Provide userId or groupId (not both).",
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "spaceId",
+            "role"
+          ],
+          "description": "Change the role of a user or group in a space. Provide exactly one of `userId` or `groupId`.",
+          "properties": {
+            "spaceId": {
+              "type": "string",
+              "description": "ID of the space."
+            },
+            "userId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ID of the user whose role to change. Mutually exclusive with `groupId`."
+            },
+            "groupId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ID of the group whose role to change. Mutually exclusive with `userId`."
+            },
+            "role": {
+              "type": "string",
+              "enum": [
+                "admin",
+                "writer",
+                "reader"
+              ],
+              "description": "New space role. `admin`: full control. `writer`: create and edit pages. `reader`: read-only."
+            }
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Role updated",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "description": "Response payload"
+              },
+              "success": {
+                "type": "boolean",
+                "examples": [
+                  true
+                ]
+              },
+              "status": {
+                "type": "integer",
+                "examples": [
+                  200
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Validation error",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

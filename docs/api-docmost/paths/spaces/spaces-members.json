@@ -1,0 +1,207 @@
+{
+  "operationId": "getSpaceMembers",
+  "tags": [
+    "Spaces"
+  ],
+  "summary": "List space members",
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "allOf": [
+            {
+              "type": "object",
+              "required": [
+                "spaceId"
+              ],
+              "properties": {
+                "spaceId": {
+                  "type": "string",
+                  "description": "Space identifier (UUID)."
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100,
+                  "default": 20,
+                  "description": "Maximum number of items to return per page."
+                },
+                "cursor": {
+                  "type": "string",
+                  "format": "base64",
+                  "description": "Set cursor to `nextCursor` returned by the previous call to list items in the next page."
+                },
+                "query": {
+                  "type": "string",
+                  "description": "Optional text filter to search within the listed items (e.g. filter members by name)."
+                },
+                "adminView": {
+                  "type": "boolean",
+                  "description": "If `true`, the list includes all items the admin has global permissions to access by virtue of their admin role."
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Paginated space members (users and groups in same list)",
+      "content": {
+        "application/json": {
+          "schema": {
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "description": "Response payload"
+                  },
+                  "success": {
+                    "type": "boolean",
+                    "examples": [
+                      true
+                    ]
+                  },
+                  "status": {
+                    "type": "integer",
+                    "examples": [
+                      200
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "description": "A space member entry (user or group)",
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "user",
+                                "group"
+                              ]
+                            },
+                            "email": {
+                              "type": "string",
+                              "format": "email",
+                              "description": "Present when type is user"
+                            },
+                            "avatarUrl": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Present when type is user"
+                            },
+                            "memberCount": {
+                              "type": "integer",
+                              "description": "Present when type is group"
+                            },
+                            "isDefault": {
+                              "type": "boolean",
+                              "description": "Present when type is group"
+                            },
+                            "role": {
+                              "type": "string"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "limit": {
+                            "type": "integer"
+                          },
+                          "hasNextPage": {
+                            "type": "boolean"
+                          },
+                          "hasPrevPage": {
+                            "type": "boolean"
+                          },
+                          "nextCursor": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "format": "base64"
+                          },
+                          "prevCursor": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "format": "base64"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Docmost API",
+    "version": "1.0.0",
+    "description": "Docmost is an enterprise-ready collaborative wiki software for modern teams that you can self-host with full control over your data.\n\n## Authentication\n\nPass an API key as `Authorization: Bearer <token>`.\n\n## Response format\n\nAll endpoints use POST unless noted otherwise. Responses are wrapped as\n`{ data, success, status }` except where noted (health, file downloads).\n\n## Pagination\n\nList endpoints return paginated results using cursor-based pagination. Pass an optional `limit` (1–100, default 20) to control page size. Cursors are opaque base64-encoded strings. The response shape is:\n\n```json\n{\n  \"success\": true,\n  \"status\": 200,\n  \"data\": {\n    \"items\": [ ... ],\n    \"meta\": {\n      \"limit\": 20,\n      \"hasNextPage\": true,\n      \"hasPrevPage\": false,\n      \"nextCursor\": \"aWQ9MDE5OGVjMDYtZTAwY...\",\n      \"prevCursor\": null\n    }\n  }\n}\n```\n\nTo fetch the next page, pass the `nextCursor` value as `cursor` in your next request:\n\n```json\n{\n  \"limit\": 20,\n  \"cursor\": \"aWQ9MDE5OGVjMDYtZTAwY...\"\n}\n```\n\nTo go back, pass `prevCursor` as `cursor` instead.\n\n## Enterprise features\n\nEndpoints tagged **EE** require an enterprise license or cloud plan.\n"
+  },
+  "servers": [
+    {
+      "url": "{baseUrl}/api",
+      "description": "Docmost API server",
+      "variables": {
+        "baseUrl": {
+          "default": "http://localhost:3000",
+          "description": "Base URL of your Docmost instance (e.g. https://docs.example.com)"
+        }
+      }
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authentication and account management"
+    },
+    {
+      "name": "Users",
+      "description": "User profile operations"
+    },
+    {
+      "name": "Workspace",
+      "description": "Workspace settings, members, and invitations"
+    },
+    {
+      "name": "Spaces",
+      "description": "Space CRUD and membership"
+    },
+    {
+      "name": "Pages",
+      "description": "Page CRUD, history, and tree operations"
+    },
+    {
+      "name": "Comments",
+      "description": "Page comments"
+    },
+    {
+      "name": "Attachments",
+      "description": "File uploads, avatars, and icons"
+    },
+    {
+      "name": "Search",
+      "description": "Full-text search and suggestions"
+    },
+    {
+      "name": "Attachment Search",
+      "description": "Attachment full-text search (EE)"
+    },
+    {
+      "name": "Shares",
+      "description": "Public page sharing"
+    },
+    {
+      "name": "Groups",
+      "description": "User groups"
+    },
+    {
+      "name": "Export",
+      "description": "Page and space export"
+    },
+    {
+      "name": "Import",
+      "description": "Page and zip import"
+    },
+    {
+      "name": "File Tasks",
+      "description": "Async import task tracking"
+    },
+    {
+      "name": "Health",
+      "description": "Health and liveness checks"
+    },
+    {
+      "name": "Version",
+      "description": "Server version info"
+    },
+    {
+      "name": "API Keys",
+      "description": "API key management (EE)"
+    },
+    {
+      "name": "MFA",
+      "description": "Multi-factor authentication (EE)"
+    },
+    {
+      "name": "Comment Resolution",
+      "description": "Comment resolve/unresolve (EE)"
+    },
+    {
+      "name": "License",
+      "description": "License activation (EE)"
+    },
+    {
+      "name": "SSO",
+      "description": "SSO provider management (EE)"
+    },
+    {
+      "name": "AI",
+      "description": "AI-powered search (EE)"
+    },
+    {
+      "name": "Cloud",
+      "description": "Cloud workspace management (EE / Cloud)"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "operationId": "mfaValidateAccess",
+  "tags": [
+    "MFA"
+  ],
+  "summary": "Validate MFA token validity",
+  "responses": {
+    "200": {
+      "description": "Validation result",
+      "content": {
+        "application/json": {
+          "schema": {
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "description": "Response payload"
+                  },
+                  "success": {
+                    "type": "boolean",
+                    "examples": [
+                      true
+                    ]
+                  },
+                  "status": {
+                    "type": "integer",
+                    "examples": [
+                      200
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "valid": {
+                        "type": "boolean"
+                      },
+                      "isTransferToken": {
+                        "type": "boolean"
+                      },
+                      "requiresMfaSetup": {
+                        "type": "boolean"
+                      },
+                      "userHasMfa": {
+                        "type": "boolean"
+                      },
+                      "isMfaEnforced": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "operationId": "acceptInvite",
+  "tags": [
+    "Workspace"
+  ],
+  "summary": "Accept a workspace invitation",
+  "security": [],
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "invitationId",
+            "name",
+            "password",
+            "token"
+          ],
+          "properties": {
+            "invitationId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ID of the invitation being accepted."
+            },
+            "name": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 60,
+              "description": "Display name for the new user account."
+            },
+            "password": {
+              "type": "string",
+              "minLength": 8,
+              "description": "Password for the new user account."
+            },
+            "token": {
+              "type": "string",
+              "description": "Invitation token from the invitation email. Must match the stored token."
+            }
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Invitation accepted",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "description": "Response payload"
+              },
+              "success": {
+                "type": "boolean",
+                "examples": [
+                  true
+                ]
+              },
+              "status": {
+                "type": "integer",
+                "examples": [
+                  200
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Invalid invitation token or validation error",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

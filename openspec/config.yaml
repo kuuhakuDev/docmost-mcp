@@ -1,0 +1,5 @@
+schema: spec-driven
+
+context: |
+  Idioma: Español
+    Todos los artefactos deben escribirse en español.

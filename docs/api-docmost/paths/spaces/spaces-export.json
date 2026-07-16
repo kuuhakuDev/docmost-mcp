@@ -1,0 +1,83 @@
+{
+  "operationId": "exportSpace",
+  "tags": [
+    "Export"
+  ],
+  "summary": "Export all pages in a space as zip",
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "spaceId",
+            "format"
+          ],
+          "properties": {
+            "spaceId": {
+              "type": "string",
+              "description": "ID of the space to export. All pages in the space are included."
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "html",
+                "markdown"
+              ],
+              "description": "Export format. `html`: HTML files. `markdown`: Markdown (.md) files."
+            },
+            "includeAttachments": {
+              "type": "boolean",
+              "description": "If `true`, includes file attachments in the export archive. If `false` (default), only text content is exported."
+            }
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Zip file stream",
+      "content": {
+        "application/zip": {
+          "schema": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,324 @@
+{
+  "operationId": "updateSsoProvider",
+  "tags": [
+    "SSO"
+  ],
+  "summary": "Update an SSO provider (EE)",
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "providerId"
+          ],
+          "description": "Update an SSO provider. All fields except `providerId` are optional.",
+          "properties": {
+            "providerId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ID of the SSO provider to update."
+            },
+            "name": {
+              "type": "string",
+              "maxLength": 64,
+              "description": "New display name."
+            },
+            "samlUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "SAML: Updated IdP metadata URL."
+            },
+            "samlCertificate": {
+              "type": "string",
+              "description": "SAML: Updated X.509 certificate (PEM format)."
+            },
+            "oidcIssuer": {
+              "type": "string",
+              "format": "uri",
+              "description": "OIDC: Updated issuer URL."
+            },
+            "oidcClientId": {
+              "type": "string",
+              "description": "OIDC: Updated client ID."
+            },
+            "oidcClientSecret": {
+              "type": "string",
+              "description": "OIDC: Updated client secret."
+            },
+            "ldapUrl": {
+              "type": "string",
+              "description": "LDAP: Updated server URL."
+            },
+            "ldapBindDn": {
+              "type": "string",
+              "description": "LDAP: Updated bind DN."
+            },
+            "ldapBindPassword": {
+              "type": "string",
+              "description": "LDAP: Updated bind password."
+            },
+            "ldapBaseDn": {
+              "type": "string",
+              "description": "LDAP: Updated base DN."
+            },
+            "ldapUserSearchFilter": {
+              "type": "string",
+              "description": "LDAP: Updated search filter."
+            },
+            "ldapUserAttributes": {
+              "type": "object",
+              "description": "LDAP: Updated attribute mapping."
+            },
+            "ldapTlsEnabled": {
+              "type": "boolean",
+              "description": "LDAP: Enable or disable TLS."
+            },
+            "ldapTlsCaCert": {
+              "type": "string",
+              "description": "LDAP: Updated CA certificate."
+            },
+            "allowSignup": {
+              "type": "boolean",
+              "description": "Allow or disallow automatic user creation."
+            },
+            "isEnabled": {
+              "type": "boolean",
+              "description": "Enable or disable this provider."
+            },
+            "groupSync": {
+              "type": "boolean",
+              "description": "Enable or disable group sync."
+            }
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Updated provider",
+      "content": {
+        "application/json": {
+          "schema": {
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "description": "Response payload"
+                  },
+                  "success": {
+                    "type": "boolean",
+                    "examples": [
+                      true
+                    ]
+                  },
+                  "status": {
+                    "type": "integer",
+                    "examples": [
+                      200
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "saml",
+                          "oidc",
+                          "google",
+                          "ldap"
+                        ]
+                      },
+                      "isEnabled": {
+                        "type": "boolean"
+                      },
+                      "allowSignup": {
+                        "type": "boolean"
+                      },
+                      "groupSync": {
+                        "type": "boolean"
+                      },
+                      "samlUrl": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "samlCertificate": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "oidcIssuer": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "oidcClientId": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "oidcClientSecret": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "ldapUrl": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "ldapBindDn": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "ldapBaseDn": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "ldapUserSearchFilter": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "ldapUserAttributes": {
+                        "oneOf": [
+                          {
+                            "type": "object"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "ldapTlsEnabled": {
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "ldapTlsCaCert": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "creatorId": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "format": "uuid"
+                      },
+                      "workspaceId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "404": {
+      "description": "SSO provider not found",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,280 @@
+{
+  "operationId": "updateWorkspace",
+  "tags": [
+    "Workspace"
+  ],
+  "summary": "Update workspace settings",
+  "description": "Requires Manage/Settings permission.",
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "description": "Workspace display name."
+            },
+            "hostname": {
+              "type": "string",
+              "minLength": 4,
+              "maxLength": 30,
+              "description": "Subdomain identifier. Alphanumeric, lowercased. Changing this logs users out from the old hostname."
+            },
+            "description": {
+              "type": "string",
+              "description": "Workspace description."
+            },
+            "logo": {
+              "type": "string",
+              "description": "Logo image URL or filename."
+            },
+            "emailDomains": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Allowed email domains for signup (e.g. `[\"example.com\"]`). Used with SSO enforcement to restrict which email domains can join."
+            },
+            "enforceSso": {
+              "type": "boolean",
+              "description": "If `true`, traditional email/password login is disabled. All users must authenticate via a configured SSO provider."
+            },
+            "enforceMfa": {
+              "type": "boolean",
+              "description": "If `true`, all users are required to set up multi-factor authentication. Users without MFA are prompted to configure it on login."
+            },
+            "restrictApiToAdmins": {
+              "type": "boolean",
+              "description": "If `true`, only workspace admins can create and manage API keys. Regular members cannot create API keys."
+            },
+            "aiSearch": {
+              "type": "boolean",
+              "description": "Enable AI-powered semantic search (EE)."
+            },
+            "generativeAi": {
+              "type": "boolean",
+              "description": "Enable generative AI features such as content generation (EE)."
+            },
+            "disablePublicSharing": {
+              "type": "boolean",
+              "description": "If `true`, disables public page sharing across the entire workspace. Overrides space-level sharing settings."
+            }
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Updated workspace",
+      "content": {
+        "application/json": {
+          "schema": {
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "description": "Response payload"
+                  },
+                  "success": {
+                    "type": "boolean",
+                    "examples": [
+                      true
+                    ]
+                  },
+                  "status": {
+                    "type": "integer",
+                    "examples": [
+                      200
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "description": "Workspace with computed memberCount and hasLicenseKey",
+                    "allOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "name": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "description": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "logo": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "hostname": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "customDomain": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "defaultRole": {
+                            "type": "string"
+                          },
+                          "defaultSpaceId": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "format": "uuid"
+                          },
+                          "emailDomains": {
+                            "type": [
+                              "array",
+                              "null"
+                            ],
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "enforceSso": {
+                            "type": "boolean"
+                          },
+                          "enforceMfa": {
+                            "type": [
+                              "boolean",
+                              "null"
+                            ]
+                          },
+                          "settings": {
+                            "type": [
+                              "object",
+                              "null"
+                            ]
+                          },
+                          "plan": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "status": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "memberCount": {
+                            "type": "integer"
+                          },
+                          "hasLicenseKey": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Validation error",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

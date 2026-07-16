@@ -1,0 +1,37 @@
+{
+  "operationId": "healthCheck",
+  "tags": [
+    "Health"
+  ],
+  "summary": "Health check (database, redis, storage)",
+  "security": [],
+  "responses": {
+    "200": {
+      "description": "Health status (raw, no wrapper)",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "examples": [
+                  "ok"
+                ]
+              },
+              "info": {
+                "type": "object"
+              },
+              "error": {
+                "type": "object"
+              },
+              "details": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

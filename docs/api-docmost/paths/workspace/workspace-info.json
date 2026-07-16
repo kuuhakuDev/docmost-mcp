@@ -1,0 +1,169 @@
+{
+  "operationId": "getWorkspaceInfo",
+  "tags": [
+    "Workspace"
+  ],
+  "summary": "Get workspace details for authenticated user",
+  "responses": {
+    "200": {
+      "description": "Workspace info",
+      "content": {
+        "application/json": {
+          "schema": {
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "description": "Response payload"
+                  },
+                  "success": {
+                    "type": "boolean",
+                    "examples": [
+                      true
+                    ]
+                  },
+                  "status": {
+                    "type": "integer",
+                    "examples": [
+                      200
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "name": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "description": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "logo": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "hostname": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "customDomain": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "defaultRole": {
+                        "type": "string"
+                      },
+                      "defaultSpaceId": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "format": "uuid"
+                      },
+                      "emailDomains": {
+                        "type": [
+                          "array",
+                          "null"
+                        ],
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "enforceSso": {
+                        "type": "boolean"
+                      },
+                      "enforceMfa": {
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "settings": {
+                        "type": [
+                          "object",
+                          "null"
+                        ]
+                      },
+                      "plan": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "status": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "404": {
+      "description": "Workspace not found",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

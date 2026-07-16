@@ -1,0 +1,330 @@
+{
+  "operationId": "createSsoProvider",
+  "tags": [
+    "SSO"
+  ],
+  "summary": "Create an SSO provider (EE)",
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "name",
+            "type"
+          ],
+          "description": "Create an SSO provider. The required fields depend on the provider `type`.",
+          "properties": {
+            "name": {
+              "type": "string",
+              "maxLength": 64,
+              "description": "Display name for the SSO provider (shown on the login page)."
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "saml",
+                "oidc",
+                "google",
+                "ldap"
+              ],
+              "description": "Provider type. `saml`: SAML 2.0 identity provider. `oidc`: OpenID Connect provider. `google`: Google OAuth (simplified OIDC). `ldap`: LDAP/Active Directory."
+            },
+            "samlUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "SAML: IdP metadata URL or SSO endpoint URL."
+            },
+            "samlCertificate": {
+              "type": "string",
+              "description": "SAML: X.509 certificate for signature verification (PEM format)."
+            },
+            "oidcIssuer": {
+              "type": "string",
+              "format": "uri",
+              "description": "OIDC/Google: Issuer URL (e.g. `https://accounts.google.com`)."
+            },
+            "oidcClientId": {
+              "type": "string",
+              "description": "OIDC/Google: OAuth client ID."
+            },
+            "oidcClientSecret": {
+              "type": "string",
+              "description": "OIDC/Google: OAuth client secret."
+            },
+            "ldapUrl": {
+              "type": "string",
+              "description": "LDAP: Server URL with protocol (`ldap://` or `ldaps://`)."
+            },
+            "ldapBindDn": {
+              "type": "string",
+              "description": "LDAP: Bind Distinguished Name for connecting to the LDAP server."
+            },
+            "ldapBindPassword": {
+              "type": "string",
+              "description": "LDAP: Bind password."
+            },
+            "ldapBaseDn": {
+              "type": "string",
+              "description": "LDAP: Base DN for user search (e.g. `ou=users,dc=example,dc=com`)."
+            },
+            "ldapUserSearchFilter": {
+              "type": "string",
+              "description": "LDAP: Search filter for locating users (e.g. `(uid={{username}})`)."
+            },
+            "ldapUserAttributes": {
+              "type": "object",
+              "description": "LDAP: Attribute mapping for user fields (name, email). Maps LDAP attribute names to Docmost user fields."
+            },
+            "ldapTlsEnabled": {
+              "type": "boolean",
+              "description": "LDAP: If `true`, uses TLS for the connection."
+            },
+            "ldapTlsCaCert": {
+              "type": "string",
+              "description": "LDAP: CA certificate for TLS verification (PEM format)."
+            },
+            "allowSignup": {
+              "type": "boolean",
+              "description": "If `true`, users authenticating via this provider for the first time are automatically created in the workspace."
+            },
+            "isEnabled": {
+              "type": "boolean",
+              "description": "If `true`, this provider is active and shown on the login page."
+            },
+            "groupSync": {
+              "type": "boolean",
+              "description": "If `true`, syncs group memberships from the SSO provider to Docmost groups."
+            }
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "Created provider",
+      "content": {
+        "application/json": {
+          "schema": {
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "description": "Response payload"
+                  },
+                  "success": {
+                    "type": "boolean",
+                    "examples": [
+                      true
+                    ]
+                  },
+                  "status": {
+                    "type": "integer",
+                    "examples": [
+                      200
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "saml",
+                          "oidc",
+                          "google",
+                          "ldap"
+                        ]
+                      },
+                      "isEnabled": {
+                        "type": "boolean"
+                      },
+                      "allowSignup": {
+                        "type": "boolean"
+                      },
+                      "groupSync": {
+                        "type": "boolean"
+                      },
+                      "samlUrl": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "samlCertificate": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "oidcIssuer": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "oidcClientId": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "oidcClientSecret": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "ldapUrl": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "ldapBindDn": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "ldapBaseDn": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "ldapUserSearchFilter": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "ldapUserAttributes": {
+                        "oneOf": [
+                          {
+                            "type": "object"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "ldapTlsEnabled": {
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "ldapTlsCaCert": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "creatorId": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "format": "uuid"
+                      },
+                      "workspaceId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "400": {
+      "description": "Validation error",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "403": {
+      "description": "Forbidden",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "message": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "error": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

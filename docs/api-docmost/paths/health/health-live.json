@@ -1,0 +1,23 @@
+{
+  "operationId": "liveness",
+  "tags": [
+    "Health"
+  ],
+  "summary": "Liveness probe",
+  "security": [],
+  "responses": {
+    "200": {
+      "description": "Server is alive",
+      "content": {
+        "text/plain": {
+          "schema": {
+            "type": "string",
+            "examples": [
+              "ok"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
