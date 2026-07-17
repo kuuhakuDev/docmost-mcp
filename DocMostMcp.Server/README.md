@@ -1,99 +1,94 @@
-# MCP Server
+# DocMost MCP Server
 
-This README was created using the C# MCP server project template.
-It demonstrates how you can easily create an MCP server using C# and publish it as a NuGet package.
+MCP server that exposes [Docmost](https://docmost.com) wiki pages and spaces as tools for AI agents (GitHub Copilot, Claude, etc.).
 
-The MCP server is built as a self-contained application and does not require the .NET runtime to be installed on the target machine.
-However, since it is self-contained, it must be built for each target platform separately.
-By default, the template is configured to build for:
-* `win-x64`
-* `win-arm64`
-* `osx-arm64`
-* `linux-x64`
-* `linux-arm64`
-* `linux-musl-x64`
+## Configuration
 
-If your users require more platforms to be supported, update the list of runtime identifiers in the project's `<RuntimeIdentifiers />` element.
+All configuration is done via **environment variables**:
 
-See [aka.ms/nuget/mcp/guide](https://aka.ms/nuget/mcp/guide) for the full guide.
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `DOCMOST_URL` | **Yes** | — | Base URL of your Docmost instance (e.g. `http://localhost:3000`) |
+| `DOCMOST_EMAIL` | **Yes** | — | Email address for Docmost authentication |
+| `DOCMOST_PASSWORD` | **Yes** | — | Password for Docmost authentication |
+| `DOCMOST_MCP_TRANSPORT` | No | auto | Transport mode: `stdio` (local, default with TTY) or `http` (remote) |
+| `DOCMOST_MCP_PORT` | No | `3001` | Port number for HTTP transport |
 
-Please note that this template is currently in an early preview stage. If you have feedback, please take a [brief survey](http://aka.ms/dotnet-mcp-template-survey).
+### Transport auto-detection
 
-## Checklist before publishing to NuGet.org
+If `DOCMOST_MCP_TRANSPORT` is not set:
+- **TTY present** (interactive terminal) → `stdio` mode
+- **No TTY** (redirected stdin, container) → `http` mode
 
-- Test the MCP server locally using the steps below.
-- Update the package metadata in the .csproj file, in particular the `<PackageId>`.
-- Update `.mcp/server.json` to declare your MCP server's inputs.
-  - See [configuring inputs](https://aka.ms/nuget/mcp/guide/configuring-inputs) for more details.
-- Pack the project using `dotnet pack`.
+## Usage
 
-The `bin/Release` directory will contain the package file (.nupkg), which can be [published to NuGet.org](https://learn.microsoft.com/nuget/nuget-org/publish-a-package).
+### Stdio mode (VS Code / Copilot)
 
-## Developing locally
-
-To test this MCP server from source code (locally) without using a built MCP server package, you can configure your IDE to run the project directly using `dotnet run`.
+Create `.vscode/mcp.json` at the project root:
 
 ```json
 {
   "servers": {
-    "DocmostMcp.Server": {
+    "docmost": {
       "type": "stdio",
       "command": "dotnet",
       "args": [
         "run",
         "--project",
-        "<PATH TO PROJECT DIRECTORY>"
-      ]
+        "path/to/DocMostMcp.Server/DocMostMcp.Server.csproj"
+      ],
+      "env": {
+        "DOCMOST_URL": "http://localhost:3000",
+        "DOCMOST_EMAIL": "admin@example.com",
+        "DOCMOST_PASSWORD": "your-password"
+      }
     }
   }
 }
 ```
 
-Refer to the VS Code or Visual Studio documentation for more information on configuring and using MCP servers:
+### HTTP mode
 
-- [Use MCP servers in VS Code (Preview)](https://code.visualstudio.com/docs/copilot/chat/mcp-servers)
-- [Use MCP servers in Visual Studio (Preview)](https://learn.microsoft.com/visualstudio/ide/mcp-servers)
+```bash
+export DOCMOST_MCP_TRANSPORT=http
+export DOCMOST_MCP_PORT=3001
+export DOCMOST_URL=http://localhost:3000
+export DOCMOST_EMAIL=admin@example.com
+export DOCMOST_PASSWORD=your-password
 
-## Testing the MCP Server
+dotnet run --project DocMostMcp.Server
+```
 
-Once configured, you can ask Copilot Chat for a random number, for example, `Give me 3 random numbers`. It should prompt you to use the `get_random_number` tool on the `DocmostMcp.Server` MCP server and show you the results.
+Then configure the MCP client to connect to `http://localhost:3001`.
 
-## Publishing to NuGet.org
+## Tools
 
-1. Run `dotnet pack -c Release` to create the NuGet package
-2. Publish to NuGet.org with `dotnet nuget push bin/Release/*.nupkg --api-key <your-api-key> --source https://api.nuget.org/v3/index.json`
+| Tool | Description |
+|---|---|
+| `list_spaces(query?, limit?, cursor?)` | Lists spaces the user has access to |
+| `get_space_info(spaceId)` | Gets detailed space information |
+| `list_sidebar_pages(spaceId?, pageId?, limit?, cursor?, query?)` | Lists sidebar pages |
+| `get_page(pageId, includeContent?, format?)` | Gets page details (default format: markdown) |
+| `create_page(spaceId, title?, icon?, parentPageId?, content?)` | Creates a new page (markdown) |
+| `update_page(pageId, title?, icon?, content?, operation?)` | Updates a page (markdown, default operation: replace) |
+| `delete_page(pageId, permanentlyDelete?)` | Deletes a page (default: soft-delete) |
+| `search_pages(query, spaceId?, creatorId?, limit?, offset?)` | Full-text search across pages |
 
-## Using the MCP Server from NuGet.org
-
-Once the MCP server package is published to NuGet.org, you can configure it in your preferred IDE. Both VS Code and Visual Studio use the `dnx` command to download and install the MCP server package from NuGet.org.
-
-- **VS Code**: Create a `<WORKSPACE DIRECTORY>/.vscode/mcp.json` file
-- **Visual Studio**: Create a `<SOLUTION DIRECTORY>\.mcp.json` file
-
-For both VS Code and Visual Studio, the configuration file uses the following server definition:
-
+All tools return a standard JSON envelope:
 ```json
-{
-  "servers": {
-    "DocmostMcp.Server": {
-      "type": "stdio",
-      "command": "dnx",
-      "args": [
-        "<your package ID here>",
-        "--version",
-        "<your package version here>",
-        "--yes"
-      ]
-    }
-  }
-}
+// Success
+{ "ok": true, "statusCode": 200, "data": { ... } }
+
+// Error
+{ "ok": false, "statusCode": 404, "error": "Page not found", "details": "..." }
 ```
 
-## More information
+## Troubleshooting
 
-.NET MCP servers use the [ModelContextProtocol](https://www.nuget.org/packages/ModelContextProtocol) C# SDK. For more information about MCP:
-
-- [Official Documentation](https://modelcontextprotocol.io/)
-- [Protocol Specification](https://spec.modelcontextprotocol.io/)
-- [GitHub Organization](https://github.com/modelcontextprotocol)
-- [MCP C# SDK](https://modelcontextprotocol.github.io/csharp-sdk)
+| Problem | Likely cause |
+|---|---|
+| `DOCMOST_EMAIL and DOCMOST_PASSWORD are correct` | Invalid credentials. Verify env vars |
+| `DOCMOST_URL must be an absolute HTTP or HTTPS URL` | `DOCMOST_URL` is missing or malformed |
+| Network error connecting to Docmost | Docmost instance is not reachable at the configured URL |
+| Port already in use | Change `DOCMOST_MCP_PORT` or stop the process using it |
+| Tool returns `{ "ok": false, "statusCode": 401 }` | Session expired or credentials changed. Restart the server |

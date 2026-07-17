@@ -1,22 +1,78 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
-  "description": "<your description here>",
-  "name": "io.github.<your GitHub username here>/<your repo name>",
+  "description": "MCP server that exposes Docmost wiki pages and spaces as tools for AI agents.",
+  "name": "docmost/docmost-mcp-server",
   "version": "0.1.0-beta",
   "packages": [
     {
       "registryType": "nuget",
-      "identifier": "<your package ID here>",
+      "identifier": "DocMostMcp.Server",
       "version": "0.1.0-beta",
       "transport": {
         "type": "stdio"
       },
       "packageArguments": [],
-      "environmentVariables": []
+      "environmentVariables": [
+        {
+          "name": "DOCMOST_MCP_TRANSPORT",
+          "value": "{DOCMOST_MCP_TRANSPORT}",
+          "variables": {
+            "DOCMOST_MCP_TRANSPORT": {
+              "description": "Transport mode: 'stdio' for local MCP (default with TTY), 'http' for remote.",
+              "isRequired": false,
+              "isSecret": false
+            }
+          }
+        },
+        {
+          "name": "DOCMOST_MCP_PORT",
+          "value": "{DOCMOST_MCP_PORT}",
+          "variables": {
+            "DOCMOST_MCP_PORT": {
+              "description": "Port number for HTTP transport (default: 3001).",
+              "isRequired": false,
+              "isSecret": false
+            }
+          }
+        },
+        {
+          "name": "DOCMOST_URL",
+          "value": "{DOCMOST_URL}",
+          "variables": {
+            "DOCMOST_URL": {
+              "description": "Base URL of your Docmost instance (e.g. http://localhost:3000).",
+              "isRequired": true,
+              "isSecret": false
+            }
+          }
+        },
+        {
+          "name": "DOCMOST_EMAIL",
+          "value": "{DOCMOST_EMAIL}",
+          "variables": {
+            "DOCMOST_EMAIL": {
+              "description": "Email address for Docmost authentication.",
+              "isRequired": true,
+              "isSecret": false
+            }
+          }
+        },
+        {
+          "name": "DOCMOST_PASSWORD",
+          "value": "{DOCMOST_PASSWORD}",
+          "variables": {
+            "DOCMOST_PASSWORD": {
+              "description": "Password for Docmost authentication.",
+              "isRequired": true,
+              "isSecret": true
+            }
+          }
+        }
+      ]
     }
   ],
   "repository": {
-    "url": "https://github.com/<your GitHub username here>/<your repo name>",
+    "url": "https://github.com/kuudev/docmost-mcp",
     "source": "github"
   }
 }
