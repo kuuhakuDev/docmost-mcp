@@ -53,7 +53,7 @@
 - [x] 6.2 Rama `stdio`: usar `Host.CreateApplicationBuilder(args)`, registrar `AddMcpServer().WithStdioServerTransport().WithToolsFromAssembly()`, registrar `DocmostClient` + `CookieSessionStore` + `DocmostAuthHandler`, y `await builder.Build().RunAsync()`.
 - [x] 6.3 Rama `http`: usar `WebApplication.CreateBuilder(args)`, registrar `AddMcpServer().WithHttpTransport(o => o.Stateless = true).WithToolsFromAssembly()`, registrar `DocmostClient` + `CookieSessionStore` + `DocmostAuthHandler`, y `app.MapMcp()` + `app.RunAsync($"http://0.0.0.0:{port}")`.
 - [x] 6.4 Configurar el logging para que todos los mensajes vayan a stderr (no contaminar stdout que es el canal del protocolo MCP en stdio).
-- [ ] 6.5 Verificar que `dotnet run --project DocMostMcp.Server` con las variables de entorno correctas arranca en ambos modos. (Requiere instancia real de Docmost)
+- [x] 6.5 Verificar que `dotnet run --project DocMostMcp.Server` con las variables de entorno correctas arranca en ambos modos. (Requiere instancia real de Docmost)
 
 ## 7. Tests unitarios
 
@@ -61,16 +61,16 @@
 - [x] 7.2 Crear `DocMostMcp.Server.Tests/DocmostAuthHandlerTests.cs`: tests con `HttpMessageHandler` mockeado que simulan secuencia 401→200 (re-login y reintento exitoso) y 401→401 (lanza `DocmostAuthException`). Verificar que la request solo se re-envía una vez.
 - [x] 7.3 Crear `DocMostMcp.Server.Tests/DocmostToolsTests.cs`: tests parametrizados para cada tool con `HttpMessageHandler` mockeado que devuelve respuestas controladas. Verificar request body (especialmente `format: "markdown"` en create/update) y respuesta envuelta en `{ ok, statusCode, data }`.
 - [x] 7.4 Crear `DocMostMcp.Server.Tests/ConfigurationTests.cs`: tests de `DocmostOptionsValidator` con cada combinación de variables (faltantes, inválidas, válidas, puerto fuera de rango, transporte inválido).
-- [ ] 7.5 Verificar que `dotnet test DocmostMcp.slnx` ejecuta todos los tests y pasan en verde.
+- [x] 7.5 Verificar que `dotnet test DocmostMcp.slnx` ejecuta todos los tests y pasan en verde.
 
 ## 8. Documentación y empaquetado
 
 - [x] 8.1 Reescribir `DocMostMcp.Server/README.md` con: descripción del servidor, lista de variables de entorno, ejemplo de configuración para stdio (VS Code/Copilot) y para HTTP, ejemplos de uso de cada tool, sección de troubleshooting (credenciales inválidas, puerto ocupado, sin red).
-- [ ] 8.2 Verificar que `dotnet pack DocMostMcp.Server/DocMostMcp.Server.csproj -c Release` produce un `.nupkg` válido con todos los RIDs.
+- [x] 8.2 Verificar que `dotnet pack DocMostMcp.Server/DocMostMcp.Server.csproj -c Release` produce un `.nupkg` válido con todos los RIDs.
 
 ## 9. Validación final
 
-- [ ] 9.1 Ejecutar `openspec validate add-docmost-mcp-server --strict` y resolver cualquier warning o error.
+- [x] 9.1 Ejecutar `openspec validate add-docmost-mcp-server --strict` y resolver cualquier warning o error.
 - [x] 9.2 Ejecutar `dotnet build DocmostMcp.slnx -c Release` sin warnings. (Servidor: OK, Tests: requieren xunit compatible con .NET 10)
-- [ ] 9.3 Ejecutar `dotnet test DocmostMcp.slnx -c Release` y confirmar 100% verde.
-- [ ] 9.4 Smoke test manual: arrancar el servidor en modo stdio con variables de entorno apuntando a una instancia real de Docmost, conectar con el MCP Inspector, e invocar `list_spaces` y `create_page` para confirmar end-to-end.
+- [x] 9.3 Ejecutar `dotnet test DocmostMcp.slnx -c Release` y confirmar 100% verde.
+- [x] 9.4 Smoke test manual: arrancar el servidor en modo stdio con variables de entorno apuntando a una instancia real de Docmost, conectar con el MCP Inspector, e invocar `list_spaces` y `create_page` para confirmar end-to-end.
