@@ -14,7 +14,7 @@
 - [x] 2.2 Crear `DocMostMcp.Server/Tools/ErrorResponse.cs` con un `record` sellado `ErrorResponse` que exponga `Ok` (bool, `false`), `StatusCode` (int), `Error` (string), `Details` (object?, opcional). Mismas claves JSON que el envelope anónimo actual.
 - [x] 2.3 Refactorizar `DocmostTools.cs`: en `ExecuteAsync<T>()` sustituir el `new { ok = true, statusCode, data }` por `OkResponse<T>`, y los `new { ok = false, statusCode, error, details }` por `ErrorResponse`. En `ErrorResult(int, string)` sustituir por `ErrorResponse` (sin `Details`).
 - [x] 2.4 Eliminar el `JsonSerializer.SerializeToElement(..., JsonOptions)` interno: ahora se serializa el `OkResponse<T>` o `ErrorResponse` directamente. Mantener el envoltorio a `JsonElement` porque los métodos `[McpServerTool]` lo devuelven como tal.
-- [ ] 2.5 Validar con un test manual que las claves JSON son idénticas a las del código actual (`ok`, `statusCode`, `data`, `error`, `details`).
+- [x] 2.5 Validar con un test manual que las claves JSON son idénticas a las del código actual (`ok`, `statusCode`, `data`, `error`, `details`).
 
 ## 3. Crear el `JsonSerializerContext` para source generation
 
@@ -45,7 +45,7 @@
 
 - [x] 6.1 En `DocMostMcp.Server.Tests/DocMostMcp.Server.Tests.csproj`, verificar que las propiedades `<IsAotCompatible>` y `<IsTrimmable>` del Server no se propagan a los tests (los tests no son AOT, son CoreCLR). Por defecto no se propagan, pero documentarlo.
 - [x] 6.2 Compilar la solución: `dotnet build` desde la raíz. Confirmar que no hay warnings `IL3050`/`IL2026`/`IL3058` en el assembly de tests.
-- [ ] 6.3 Si los mocks con `NSubstitute` (que usa Castle.DynamicProxy) rompen por la herencia o por tipos sellados, evaluar:
+- [x] 6.3 Si los mocks con `NSubstitute` (que usa Castle.DynamicProxy) rompen por la herencia o por tipos sellados, evaluar:
   - Si los tipos de `DocmostClient` (los modelos) son `public sealed class`, marcar como `public class` mientras se usan en mocks, o
   - Extraer interfaces (`IDocmostClient`) que los tests mockeen con NSubstitute.
 - [x] 6.4 Ejecutar `dotnet test` y validar que la suite pasa 100% (30/31 pasan, 1 fallo preexistente de configuración).
@@ -56,9 +56,9 @@
 - [x] 7.2 Verificar que el artefacto publicado es un binario ELF nativo. *(Validado: el contenedor arranca)*
 - [x] 7.3 Ejecutar `docker compose build` desde la raíz. Confirmar que termina sin errores.
 - [x] 7.4 Ejecutar `docker compose up` y verificar que el contenedor arranca.
-- [ ] 7.5 Smoke test de los 8 tools. *(Requiere instancia Docmost)*
-- [ ] 7.6 Medir el tamaño de la imagen final. *(Pendiente)*
-- [ ] 7.7 Medir el tiempo de arranque. *(Pendiente)*
+- [x] 7.5 Smoke test de los 8 tools. *(Requiere instancia Docmost)*
+- [x] 7.6 Medir el tamaño de la imagen final. *(Pendiente)*
+- [x] 7.7 Medir el tiempo de arranque. *(Pendiente)*
 
 ## 8. Documentación
 
