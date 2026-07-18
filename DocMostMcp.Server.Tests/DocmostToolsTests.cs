@@ -3,6 +3,7 @@ using System.Text.Json;
 using DocMostMcp.Server.Client;
 using DocMostMcp.Server.Tools;
 using FluentAssertions;
+using Xunit;
 
 namespace DocMostMcp.Server.Tests;
 

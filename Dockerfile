@@ -1,19 +1,20 @@
-FROM dhi.io/dotnet:10-sdk AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
+ARG TARGETARCH
+
+RUN apk add --no-cache clang build-base zlib-dev
 
 WORKDIR /source
 
 COPY DocMostMcp.Server/DocMostMcp.Server.csproj .
-RUN dotnet restore
+RUN dotnet restore -a $TARGETARCH
 
 COPY DocMostMcp.Server/ .
 RUN dotnet publish \
     -c Release \
-    --self-contained false \
-    /p:PublishSingleFile=false \
-    /p:PublishSelfContained=false \
+    -a $TARGETARCH \
     -o /app
 
-FROM dhi.io/aspnetcore:10
+FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine AS runtime
 
 WORKDIR /app
 COPY --from=build /app .
@@ -21,4 +22,4 @@ COPY --from=build /app .
 ENV DOCMOST_MCP_TRANSPORT=http
 EXPOSE 3001
 
-ENTRYPOINT ["dotnet", "DocMostMcp.Server.dll"]
+ENTRYPOINT ["/app/DocMostMcp.Server"]

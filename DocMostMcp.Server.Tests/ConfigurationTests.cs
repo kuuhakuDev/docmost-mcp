@@ -1,5 +1,6 @@
 using DocMostMcp.Server.Configuration;
 using FluentAssertions;
+using Xunit;
 
 namespace DocMostMcp.Server.Tests;
 

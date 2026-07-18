@@ -1,6 +1,7 @@
 using System.Net;
 using DocMostMcp.Server.Client;
 using FluentAssertions;
+using Xunit;
 
 namespace DocMostMcp.Server.Tests;
 

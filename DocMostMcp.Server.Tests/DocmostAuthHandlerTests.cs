@@ -4,6 +4,7 @@ using DocMostMcp.Server.Client;
 using DocMostMcp.Server.Configuration;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
+using Xunit;
 
 namespace DocMostMcp.Server.Tests;
 
