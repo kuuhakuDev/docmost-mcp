@@ -1,5 +1,8 @@
+using System.Text.Json;
 using DocMostMcp.Server.Client;
 using DocMostMcp.Server.Configuration;
+using DocMostMcp.Server.Json;
+using DocMostMcp.Server.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -50,24 +53,31 @@ if (options.Transport == TransportMode.Stdio)
 
     RegisterServices(stdioBuilder.Services, options);
 
+    var stdioSerializerOptions = new JsonSerializerOptions(AppJsonSerializerContext.Default.Options);
+
     stdioBuilder.Services
         .AddMcpServer()
         .WithStdioServerTransport()
-        .WithToolsFromAssembly();
+        .WithTools<DocmostTools>(stdioSerializerOptions);
 
     await stdioBuilder.Build().RunAsync();
 }
 else
 {
     // ── HTTP MODE ──
-    var httpBuilder = WebApplication.CreateBuilder(args);
+    var httpBuilder = WebApplication.CreateSlimBuilder(args);
+
+    httpBuilder.Services.ConfigureHttpJsonOptions(options =>
+    {
+        options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
+    });
 
     RegisterServices(httpBuilder.Services, options);
 
     httpBuilder.Services
         .AddMcpServer()
         .WithHttpTransport(o => o.Stateless = true)
-        .WithToolsFromAssembly();
+        .WithTools<DocmostTools>();
 
     var app = httpBuilder.Build();
     app.MapMcp();

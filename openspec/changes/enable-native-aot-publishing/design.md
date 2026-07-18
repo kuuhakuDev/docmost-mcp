@@ -46,11 +46,12 @@ El proyecto `docmost-mcp` es un servidor MCP para [Docmost](https://docmost.com)
 - **Implicación**: la imagen runtime final debe ser Alpine o `chiseled-aot` (basadas en musl).
 - **Validación**: `dotnet publish -c Release -r linux-musl-x64` debe terminar sin errores desde el SDK oficial.
 
-### Decisión 2 — Build image: `mcr.microsoft.com/dotnet/sdk:10.0`
+### Decisión 2 — Build image: `mcr.microsoft.com/dotnet/sdk:10.0-alpine`
 
-- **Por qué**: Es la imagen oficial con las herramientas de .NET. Hay que instalar manualmente `clang` y `zlib1g-dev` (prerrequisitos documentados del compilador AOT en Linux).
-- **Por qué no `dhi.io/dotnet:10-sdk`**: Es la imagen actual pero no es oficial. Para AOT conviene la línea oficial de Microsoft porque sus tags siguen cadencias conocidas y los prerrequisitos están bien documentados.
-- **Por qué no `mcr.microsoft.com/dotnet/sdk:10.0-aot`**: Existe y trae los prerrequisitos preinstalados, pero **duplica el tamaño** de la imagen base (~500 MB vs ~250 MB) y la build AOT la vamos a hacer una sola vez por imagen Docker. Mejor partir de la SDK oficial y añadir dos paquetes `apt-get`.
+- **Por qué**: Es la imagen SDK oficial basada en Alpine Linux (musl). Al compilar para `linux-musl-x64` sobre un sistema musl nativo, el binario resultante se enlaza correctamente contra musl. Usar el SDK Debian (`mcr.microsoft.com/dotnet/sdk:10.0`) produce un binario enlazado contra glibc aunque se especifique `-r linux-musl-x64`, porque el toolchain nativo del host siempre enlaza contra la libc del sistema ([dotnet/runtime#92294](https://github.com/dotnet/runtime/issues/92294)).
+- **Por qué no `dhi.io/dotnet:10-sdk`**: Es la imagen actual pero no es oficial. Para AOT conviene la línea oficial de Microsoft.
+- **Por qué no `mcr.microsoft.com/dotnet/sdk:10.0` (Debian)**: Produce un binario glibc que no ejecuta en `runtime-deps:alpine`. Requeriría configurar un sysroot musl o usar cross-compilación con toolchains externas.
+- **Prerrequisitos**: `apk add clang build-base zlib-dev` (paquetes equivalentes Alpine de los prerrequisitos AOT en Linux).
 
 ### Decisión 3 — Runtime image: `mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine`
 

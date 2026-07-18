@@ -83,6 +83,26 @@ All tools return a standard JSON envelope:
 { "ok": false, "statusCode": 404, "error": "Page not found", "details": "..." }
 ```
 
+## How it runs
+
+The server is compiled and published as a **Native AOT** binary for `linux-musl-x64`.
+
+- The Docker image is based on `mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine` (no .NET runtime — the binary is a standalone ELF executable).
+- Expected image size: **< 150 MB** (ideally ~100–150 MB).
+- Startup time: **milliseconds** (no JIT compilation, no assembly loading).
+- Build stage uses the official .NET SDK image with `clang` and `zlib1g-dev` installed for the AOT native compiler toolchain.
+
+### Adding a new tool type
+
+The MCP server registers tools via the generic `WithTools<T>()` API (AOT-safe), not via `WithToolsFromAssembly()`.  
+To add a new tool class decorated with `[McpServerToolType]`:
+
+1. Add the new class in the `DocMostMcp.Server/Tools/` directory.
+2. Register it in `Program.cs` by adding `.WithTools<YourNewToolType>()` to the service configuration (both stdio and HTTP branches).
+3. If the new tool returns types that are not yet in the `AppJsonSerializerContext`, add `[JsonSerializable(typeof(...))]` for those types.
+
+Without explicit registration in `Program.cs`, the new tool class will **not** be exposed to MCP clients.
+
 ## Troubleshooting
 
 | Problem | Likely cause |

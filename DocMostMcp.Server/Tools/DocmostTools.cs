@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Text.Json;
 using DocMostMcp.Server.Client;
+using DocMostMcp.Server.Json;
 
 namespace DocMostMcp.Server.Tools;
 
@@ -13,11 +14,6 @@ using ModelContextProtocol.Server;
 public sealed class DocmostTools
 {
     private readonly DocmostClient _client;
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = false,
-    };
 
     /// <summary>
     /// Initializes the tools with the Docmost API client.
@@ -239,34 +235,31 @@ public sealed class DocmostTools
 
             if (result.IsSuccess)
             {
-                var response = new
-                {
-                    ok = true,
-                    statusCode = result.StatusCode,
-                    data = result.Data,
-                };
-                return JsonSerializer.SerializeToElement(response, JsonOptions);
+                var response = new OkResponse<T?>(
+                    Ok: true,
+                    StatusCode: result.StatusCode,
+                    Data: result.Data
+                );
+                return JsonSerializer.SerializeToElement(response, typeof(OkResponse<T?>), AppJsonSerializerContext.Default);
             }
 
             // Recoverable error from Docmost
-            var errorResponse = new
-            {
-                ok = false,
-                statusCode = result.StatusCode,
-                error = result.Error?.Error ?? "Unknown error",
-                details = result.Error?.Message,
-            };
-            return JsonSerializer.SerializeToElement(errorResponse, JsonOptions);
+            var errorResponse = new ErrorResponse(
+                Ok: false,
+                StatusCode: result.StatusCode,
+                Error: result.Error?.Error ?? "Unknown error",
+                Details: result.Error?.Message
+            );
+            return JsonSerializer.SerializeToElement(errorResponse, typeof(ErrorResponse), AppJsonSerializerContext.Default);
         }
         catch (DocmostAuthException ex)
         {
-            var authError = new
-            {
-                ok = false,
-                statusCode = 401,
-                error = ex.Message,
-            };
-            return JsonSerializer.SerializeToElement(authError, JsonOptions);
+            var authError = new ErrorResponse(
+                Ok: false,
+                StatusCode: 401,
+                Error: ex.Message
+            );
+            return JsonSerializer.SerializeToElement(authError, typeof(ErrorResponse), AppJsonSerializerContext.Default);
         }
     }
 
@@ -275,12 +268,11 @@ public sealed class DocmostTools
     /// </summary>
     private static JsonElement ErrorResult(int statusCode, string message)
     {
-        var error = new
-        {
-            ok = false,
-            statusCode,
-            error = message,
-        };
-        return JsonSerializer.SerializeToElement(error, JsonOptions);
+        var error = new ErrorResponse(
+            Ok: false,
+            StatusCode: statusCode,
+            Error: message
+        );
+        return JsonSerializer.SerializeToElement(error, typeof(ErrorResponse), AppJsonSerializerContext.Default);
     }
 }
