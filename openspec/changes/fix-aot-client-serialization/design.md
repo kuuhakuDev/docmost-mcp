@@ -146,3 +146,30 @@ El de MCP **primero** (al frente) porque contiene los contratos de los tipos del
 
 - ¿Hay que añadir un endpoint `GET /health` para monitoring? **No en este cambio** (fuera de scope, queda para `feature/mcp-health-endpoint`).
 - ¿La forma del `Details` (object?) puede traer problemas con clientes MCP que esperan un string concreto? **Verificar en smoke test** — si rompe, se cambia `Details` a `string?` y se serializa con `JsonSerializer.Serialize(details)`. Bajo riesgo según el uso actual (`result.Error?.Message` se le pasa a `Details`, y `Message` ya es `object?`).
+
+## Lessons Learned
+
+### ARM64 Native AOT: PropertyNamingPolicy no es fiable en records posicionales
+
+Durante la implementación se descubrió que el source generator de `System.Text.Json` **no aplica consistentemente** el `PropertyNamingPolicy` (configurado via `[JsonSourceGenerationOptions]`) a los parámetros de **records posicionales** (`record TypeName(Param1, Param2)`) cuando se compila para ARM64 Native AOT.
+
+El `LoginRequest` original era:
+```csharp
+public sealed record LoginRequest(string Email, string Password);
+```
+
+Con `PropertyNamingPolicy = CamelCase`, se esperaba que serializara `{"email": "...", "password": "..."}`. En x64 funciona, pero en ARM64 el source generator producía nombres `"Email"`/`"Password"` (PascalCase), causando que Docmost respondiera 401.
+
+**Solución:** Anotar explícitamente cada parámetro con `[property: JsonPropertyName("...")]`:
+```csharp
+public sealed record LoginRequest(
+    [property: JsonPropertyName("email")] string Email,
+    [property: JsonPropertyName("password")] string Password
+);
+```
+
+**Regla para el futuro:** Cualquier `record` posicional que se añada al `AppJsonSerializerContext` DEBE llevar `[property: JsonPropertyName]` explícito. No confiar en `PropertyNamingPolicy`.
+
+**Referencias:**
+- [dotnet/runtime#63542](https://github.com/dotnet/runtime/issues/63542) — Minimal record definition with camel case uses Pascal Case
+- [dotnet/runtime#113045](https://github.com/dotnet/runtime/issues/113045) — JsonSerializerContext source generator ignores PropertyNamingPolicy

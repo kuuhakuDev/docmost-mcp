@@ -68,6 +68,23 @@ Cuando se usa un `JsonSerializerContext` custom (`AppJsonSerializerContext`) jun
 - **THEN** la serialización usa el `JsonTypeInfo` provisto por el resolver del SDK
 - **AND** el binario AOT no invoca reflexión para serializar tipos del protocolo
 
+### Requirement: Explicit JsonPropertyName on positional record parameters
+
+Todo `record` posicional (definido como `record TypeName(Param1, Param2)`) que cruce la frontera de serialización JSON MUST anotar explícitamente cada parámetro con `[property: JsonPropertyName("...")]`. No debe confiarse en `PropertyNamingPolicy` para determinar el nombre JSON de los parámetros de un record posicional, debido a un bug confirmado del source generator ([dotnet/runtime#63542](https://github.com/dotnet/runtime/issues/63542), [dotnet/runtime#113045](https://github.com/dotnet/runtime/issues/113045)) que impide que la política de nomenclatura se aplique consistentemente en todas las plataformas (en particular, ARM64 Native AOT).
+
+#### Scenario: LoginRequest usa JsonPropertyName explícito
+
+- **WHEN** `LoginRequest` se serializa mediante `AppJsonSerializerContext.Default.LoginRequest` en ARM64 Native AOT
+- **THEN** el JSON generado contiene `"email"` y `"password"` como nombres de propiedad (no `"Email"` ni `"Password"`)
+- **AND** Docmost acepta el login request sin error 401
+- **AND** esto funciona aunque `PropertyNamingPolicy` esté configurado a `CamelCase` en el `JsonSourceGenerationOptions`
+
+#### Scenario: Otros records posicionales siguen la misma regla
+
+- **WHEN** se añade un nuevo `record` posicional al `AppJsonSerializerContext`
+- **THEN** todos sus parámetros tienen `[property: JsonPropertyName("...")]` explícito
+- **AND** no se omite esta anotación alegando que `PropertyNamingPolicy` ya debería cubrirlo
+
 ## MODIFIED Requirements
 
 <!-- No hay requisitos modificados. Las correcciones se añaden como requisitos nuevos
