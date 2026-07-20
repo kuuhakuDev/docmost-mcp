@@ -3,6 +3,7 @@ using DocMostMcp.Server.Client;
 using DocMostMcp.Server.Configuration;
 using DocMostMcp.Server.Json;
 using DocMostMcp.Server.Tools;
+using ModelContextProtocol;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -70,6 +71,7 @@ else
     httpBuilder.Services.ConfigureHttpJsonOptions(options =>
     {
         options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
+        options.SerializerOptions.TypeInfoResolverChain.Insert(0, McpJsonUtilities.DefaultOptions.TypeInfoResolver!);
     });
 
     RegisterServices(httpBuilder.Services, options);
@@ -80,7 +82,7 @@ else
         .WithTools<DocmostTools>();
 
     var app = httpBuilder.Build();
-    app.MapMcp();
+    app.MapMcp("/mcp");
     await app.RunAsync($"http://0.0.0.0:{options.Port}");
 }
 

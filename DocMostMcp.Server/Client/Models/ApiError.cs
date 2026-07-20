@@ -1,4 +1,5 @@
 using System.Text.Json;
+using DocMostMcp.Server.Json;
 
 namespace DocMostMcp.Server.Client.Models;
 
@@ -41,7 +42,7 @@ public sealed class ApiError
             error.Message = msgProp.ValueKind switch
             {
                 JsonValueKind.String => msgProp.GetString(),
-                JsonValueKind.Array => JsonSerializer.Deserialize<string[]>(msgProp.GetRawText()),
+                JsonValueKind.Array => JsonSerializer.Deserialize(msgProp.GetRawText(), AppJsonSerializerContext.Default.StringArray),
                 _ => msgProp.GetRawText(),
             };
         }
