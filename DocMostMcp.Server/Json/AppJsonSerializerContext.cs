@@ -39,6 +39,12 @@ namespace DocMostMcp.Server.Json;
 [JsonSerializable(typeof(PaginationMeta))]
 [JsonSerializable(typeof(ApiError))]
 [JsonSerializable(typeof(ApiResponse<object>))]
+[JsonSerializable(typeof(string[]))]
+[JsonSerializable(typeof(object))]
+[JsonSerializable(typeof(LoginRequest))]
+[JsonSerializable(typeof(Dictionary<string, object>))]
+[JsonSerializable(typeof(OkResponse<Dictionary<string, object>>))]
+[JsonSerializable(typeof(JsonElement))]
 internal partial class AppJsonSerializerContext : JsonSerializerContext
 {
 }

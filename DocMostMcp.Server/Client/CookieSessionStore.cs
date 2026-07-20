@@ -1,5 +1,6 @@
 using System.Net;
 using DocMostMcp.Server.Client.Models;
+using DocMostMcp.Server.Json;
 
 namespace DocMostMcp.Server.Client;
 
@@ -126,6 +127,7 @@ public sealed class CookieSessionStore : IDisposable
         var response = await _httpClient.PostAsJsonAsync(
             "/api/auth/login",
             request,
+            AppJsonSerializerContext.Default.LoginRequest,
             cancellationToken);
 
         if (response.IsSuccessStatusCode)
@@ -152,8 +154,9 @@ public sealed class CookieSessionStore : IDisposable
         else
         {
             // Read error body.
-            var body = await response.Content.ReadFromJsonAsync<ApiError>(
-                cancellationToken: cancellationToken);
+            var body = await response.Content.ReadFromJsonAsync(
+                AppJsonSerializerContext.Default.ApiError,
+                cancellationToken);
 
             var errorMessage = body?.Error switch
             {

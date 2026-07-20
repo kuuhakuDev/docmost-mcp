@@ -59,7 +59,7 @@ export DOCMOST_PASSWORD=your-password
 dotnet run --project DocMostMcp.Server
 ```
 
-Then configure the MCP client to connect to `http://localhost:3001`.
+Then configure the MCP client to connect to `http://localhost:3001/mcp`.
 
 ## Tools
 
@@ -92,6 +92,8 @@ The server is compiled and published as a **Native AOT** binary for `linux-musl-
 - Startup time: **milliseconds** (no JIT compilation, no assembly loading).
 - Build stage uses the official .NET SDK image with `clang` and `zlib1g-dev` installed for the AOT native compiler toolchain.
 
+> **HTTP endpoint path:** The server serves the MCP streamable HTTP transport at `/mcp` (not at `/`), following the [SDK convention](https://github.com/modelcontextprotocol/csharp-sdk). Clients must connect to `http://<host>:<port>/mcp`.
+
 ### Adding a new tool type
 
 The MCP server registers tools via the generic `WithTools<T>()` API (AOT-safe), not via `WithToolsFromAssembly()`.  
@@ -112,3 +114,4 @@ Without explicit registration in `Program.cs`, the new tool class will **not** b
 | Network error connecting to Docmost | Docmost instance is not reachable at the configured URL |
 | Port already in use | Change `DOCMOST_MCP_PORT` or stop the process using it |
 | Tool returns `{ "ok": false, "statusCode": 401 }` | Session expired or credentials changed. Restart the server |
+| 404 al conectar al endpoint HTTP | Apuntando a `http://host:port/` en lugar de `http://host:port/mcp`. Añade `/mcp` al final de la URL |

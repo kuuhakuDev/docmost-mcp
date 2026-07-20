@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using DocMostMcp.Server.Client.Models;
+using DocMostMcp.Server.Json;
 
 namespace DocMostMcp.Server.Client;
 
@@ -12,11 +13,6 @@ namespace DocMostMcp.Server.Client;
 public sealed class DocmostClient
 {
     private readonly HttpClient _httpClient;
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        PropertyNameCaseInsensitive = true,
-    };
 
     /// <summary>
     /// Initializes the client with an <see cref="HttpClient"/> that goes through
@@ -194,7 +190,7 @@ public sealed class DocmostClient
     {
         try
         {
-            var response = await _httpClient.PostAsJsonAsync(endpoint, body, JsonOptions, cancellationToken);
+            var response = await _httpClient.PostAsJsonAsync<Dictionary<string, object?>>(endpoint, (Dictionary<string, object?>)body!, AppJsonSerializerContext.Default.DictionaryStringObject, cancellationToken);
 
             var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
 
@@ -222,7 +218,7 @@ public sealed class DocmostClient
                     var data = default(T);
                     if (root.TryGetProperty("data", out var dataProp) && dataProp.ValueKind != JsonValueKind.Null)
                     {
-                        data = JsonSerializer.Deserialize<T>(dataProp.GetRawText(), JsonOptions);
+                        data = (T?)JsonSerializer.Deserialize(dataProp.GetRawText(), AppJsonSerializerContext.Default.GetTypeInfo(typeof(T))!);
                     }
 
                     return DocmostResult<T>.Success(data, (int)response.StatusCode);
@@ -241,7 +237,7 @@ public sealed class DocmostClient
             // Not a wrapped response — treat based on status code
             if (response.IsSuccessStatusCode)
             {
-                var data = JsonSerializer.Deserialize<T>(responseBody, JsonOptions);
+                var data = (T?)JsonSerializer.Deserialize(responseBody, AppJsonSerializerContext.Default.GetTypeInfo(typeof(T))!);
                 return DocmostResult<T>.Success(data, (int)response.StatusCode);
             }
 
