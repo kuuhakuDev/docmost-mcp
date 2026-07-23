@@ -28,7 +28,6 @@ jobs:
       - uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: linux/amd64
           push: true
           tags: ghcr.io/${{ env.IMAGE_NAME }}:amd64
           cache-from: type=gha,scope=amd64
@@ -57,7 +56,6 @@ jobs:
       - uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: linux/arm64
           push: true
           tags: ghcr.io/${{ env.IMAGE_NAME }}:arm64
           cache-from: type=gha,scope=arm64
