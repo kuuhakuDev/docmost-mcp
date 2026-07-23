@@ -79,7 +79,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create and push multi-arch manifest for latest
-        if: github.ref == 'refs/heads/main'
         run: |
           docker manifest create ghcr.io/${{ env.IMAGE_NAME }}:latest \
             ghcr.io/${{ env.IMAGE_NAME }}:amd64 \
