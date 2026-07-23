@@ -33,6 +33,7 @@ jobs:
           tags: ghcr.io/${{ env.IMAGE_NAME }}:amd64
           cache-from: type=gha,scope=amd64
           cache-to: type=gha,scope=amd64,mode=max
+          provenance: false
 
   build-arm64:
     runs-on: ubuntu-24.04-arm
@@ -61,6 +62,7 @@ jobs:
           tags: ghcr.io/${{ env.IMAGE_NAME }}:arm64
           cache-from: type=gha,scope=arm64
           cache-to: type=gha,scope=arm64,mode=max
+          provenance: false
 
   merge-manifest:
     needs: [build-amd64, build-arm64]
